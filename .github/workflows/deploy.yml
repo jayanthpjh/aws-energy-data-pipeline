@@ -1,4 +1,4 @@
-name: CI/CD Terraform Deploy
+name: Energy_Data_CI/CD Terraform Deploy
 
 on:
   push:
