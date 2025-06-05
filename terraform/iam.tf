@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda_exec" {
-  name = "lambda_exec_role"
+  name = "energy_data_lambda_exec_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -15,7 +15,7 @@ resource "aws_iam_role" "lambda_exec" {
 }
 
 resource "aws_iam_policy_attachment" "lambda_logs" {
-  name       = "lambda_logs"
+  name       = "energy_data_lambda_logs"
   roles      = [aws_iam_role.lambda_exec.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
