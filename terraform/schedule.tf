@@ -6,7 +6,7 @@ resource "aws_lambda_function" "data_feeder" {
   timeout       = 30
   memory_size   = 128
 
-  filename         = data.archive_file.feeder_output.path
+  filename         = data.archive_file.feeder_output.output_path
   source_code_hash = data.archive_file.feeder_output.output_base64sha256
 }
 
