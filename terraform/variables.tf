@@ -1,11 +1,11 @@
 variable "region" {
-  default = "eu-west-2"
+  default = "us-east-2"
 }
 
 variable "s3_bucket" {
-  default = "energy-data-bucket"
+  default = "energy-data-bucket-demo1"
 }
 
 variable "dynamodb_table" {
-  default = "EnergyData"
+  default = "Energy_Data_Information"
 }
