@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "s3_bucket" {
-  default = "energy-data-bucket-demo"
+  default = "energy-data-bucket"
 }
 
 variable "dynamodb_table" {
