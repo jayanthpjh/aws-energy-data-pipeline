@@ -5,7 +5,7 @@ from uuid import uuid4
 import os
 
 s3 = boto3.client('s3')
-BUCKET_NAME = os.getenv('ENERGY_BUCKET_NAME', 'your-bucket-name')
+BUCKET_NAME = os.getenv('ENERGY_BUCKET_NAME', 'energy-data-bucket-info-demo')
 SITES = [
     {"site_id": "site_sfo", "lat": 37.7749, "lon": -122.4194},
     {"site_id": "site_nyc", "lat": 40.7128, "lon": -74.0060},
