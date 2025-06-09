@@ -35,18 +35,26 @@ git clone https://github.com/yourname/aws-energy-data-pipeline.git
 cd aws-energy-data-pipeline
 ```
 
-### 3. Export Your S3 Bucket for Local Testing
+### 3. Set S3 Bucket Name
+After Terraform deploys, export the generated bucket name so local scripts know
+where to upload data:
 ```bash
-export ENERGY_BUCKET_NAME=your-bucket-name
+export ENERGY_BUCKET_NAME=$(terraform -chdir=terraform output -raw s3_bucket_name)
 ```
 
-### 4. Zip Lambda Files
+### 4. Set DynamoDB Table Name
+After Terraform deploys, export the generated table name so local apps can find it:
+```bash
+export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
+```
+
+### 5. Zip Lambda Files
 ```bash
 cd lambda && zip lambda_function.zip lambda_function.py && cd ..
 cd data_generator && zip generate_data.zip generate_data.py && cd ..
 ```
 
-### 5. Deploy Infrastructure
+### 6. Deploy Infrastructure
 ```bash
 cd terraform
 terraform init
