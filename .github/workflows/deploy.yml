@@ -32,6 +32,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Package Lambda Layer (Zip for Terraform)
+      run: |
+        cd layers
+        zip -r layer.zip .  # assumes the whole layers/ dir is the layer content
+        cd ..
+
     - name: Terraform Init
       run: terraform -chdir=terraform init
 
