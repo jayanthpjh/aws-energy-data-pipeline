@@ -37,6 +37,7 @@ pip install -r requirements.txt
 bash lambda/build.sh
 bash data_generator/build.sh
 ```
+These archives must exist before running `terraform plan` so Terraform can find the zip files.
 Run the build scripts to package the Lambda functions with their dependencies.
 The script stores key resource names to `last_outputs.json` after each deploy
 and uses them on the next run to clean up any leftover resources. This helps
