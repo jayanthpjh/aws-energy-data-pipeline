@@ -1,9 +1,11 @@
 import boto3
 import pandas as pd
 import plotly.express as px
+import os
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('EnergyData')
+table_name = os.getenv('TABLE_NAME', 'EnergyData')
+table = dynamodb.Table(table_name)
 
 def fetch_data():
     return table.scan()['Items']
