@@ -7,5 +7,5 @@ variable "s3_bucket" {
 }
 
 variable "dynamodb_table" {
-  default = "Energy_Data_Info"
+  default = "EnergyData"
 }
