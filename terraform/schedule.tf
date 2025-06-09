@@ -8,6 +8,7 @@ resource "aws_lambda_function" "data_feeder" {
 
   filename         = "../data_generator/generate_data.zip"
   source_code_hash = filebase64sha256("../data_generator/generate_data.zip")
+  layers           = [aws_lambda_layer_version.common.arn]
 }
 
 resource "aws_cloudwatch_event_rule" "five_min_schedule" {
