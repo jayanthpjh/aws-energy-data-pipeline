@@ -17,7 +17,7 @@ def lambda_handler(event, context):
             generated = entry['energy_generated_kwh']
             consumed = entry['energy_consumed_kwh']
             net = generated - consumed
-            anomaly = 0 if net < 0 else 1
+            flag = 0 if net < 0 else 1
 
             table.put_item(Item={
                 'site_id': entry['site_id'],
