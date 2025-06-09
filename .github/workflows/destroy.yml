@@ -1,5 +1,6 @@
 name: Energy_Data_Terraform Destroy
 
+
 on:
   workflow_dispatch:
 
