@@ -40,13 +40,19 @@ cd aws-energy-data-pipeline
 export ENERGY_BUCKET_NAME=your-bucket-name
 ```
 
-### 4. Zip Lambda Files
+### 4. Set DynamoDB Table Name
+After Terraform deploys, export the generated table name so local apps can find it:
+```bash
+export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
+```
+
+### 5. Zip Lambda Files
 ```bash
 cd lambda && zip lambda_function.zip lambda_function.py && cd ..
 cd data_generator && zip generate_data.zip generate_data.py && cd ..
 ```
 
-### 5. Deploy Infrastructure
+### 6. Deploy Infrastructure
 ```bash
 cd terraform
 terraform init
