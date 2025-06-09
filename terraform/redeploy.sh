@@ -3,6 +3,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
+
 if [ -f last_outputs.json ]; then
   echo "Cleaning up resources from previous run using outputs file"
   if command -v jq >/dev/null 2>&1; then
@@ -35,3 +36,9 @@ terraform apply -auto-approve
 
 # Save outputs for next cleanup
 terraform output -json > last_outputs.json
+
+terraform init
+# Destroy existing resources to avoid naming collisions
+terraform destroy -auto-approve || true
+terraform apply -auto-approve
+

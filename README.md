@@ -35,34 +35,7 @@ git clone https://github.com/yourname/aws-energy-data-pipeline.git
 cd aws-energy-data-pipeline
 ```
 
-### 3. Set S3 Bucket Name
-After Terraform deploys, export the generated bucket name so local scripts know
-where to upload data:
-```bash
-export ENERGY_BUCKET_NAME=$(terraform -chdir=terraform output -raw s3_bucket_name)
-```
 
-### 4. Set DynamoDB Table Name
-After Terraform deploys, export the generated table name so local apps can find it:
-```bash
-export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
-```
-
-### 5. Build Lambda Packages
-Terraform expects the deployment zip files to already exist. Install
-dependencies and create them with:
-```bash
-cd lambda && ./build.sh && cd ..
-cd data_generator && ./build.sh && cd ..
-```
-
-### 6. Deploy Infrastructure
-Run the helper script which cleans up resources from the previous run, then
-initializes Terraform, destroys any existing stack and finally recreates
-everything:
-```bash
-cd terraform
-./redeploy.sh
 ```
 
 The script stores key resource names to `last_outputs.json` after each deploy
@@ -111,6 +84,11 @@ python visualization/visualize.py
 cd terraform
 terraform destroy -auto-approve
 ```
+Alternatively, trigger the **Terraform Destroy** workflow on GitHub:
+1. Push this repository to GitHub.
+2. Open the **Actions** tab.
+3. Select **Terraform Destroy** and click **Run workflow**.
+This runs `terraform destroy -auto-approve` for you.
 
 ---
 
@@ -125,6 +103,7 @@ terraform destroy -auto-approve
 ```
 aws-energy-data-pipeline/
 ├── .github/workflows/deploy.yml
+├── .github/workflows/destroy.yml
 ├── api/main.py
 ├── data_generator/generate_data.py
 ├── lambda/lambda_function.py
