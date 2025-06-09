@@ -35,43 +35,12 @@ git clone https://github.com/yourname/aws-energy-data-pipeline.git
 cd aws-energy-data-pipeline
 ```
 
-### 3. Set S3 Bucket Name
-After Terraform deploys, export the generated bucket name so local scripts know
-where to upload data:
-```bash
-export ENERGY_BUCKET_NAME=$(terraform -chdir=terraform output -raw s3_bucket_name)
+
 ```
 
-### 4. Set DynamoDB Table Name
-After Terraform deploys, export the generated table name so local apps can find it:
-
-=======
-```bash
-export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
-```
-
-### 5. Zip Lambda Files
-
-```bash
-export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
-```
-
-
-### 5.1 Build Lambda Packages
-Install dependencies and create deployment zips:
-```bash
-cd lambda && ./build.sh && cd ..
-cd data_generator && ./build.sh && cd ..
-```
-
-
-### 6. Deploy Infrastructure
-Run the helper script which initializes Terraform, destroys any existing stack,
-and then creates fresh resources:
-```bash
-cd terraform
-./redeploy.sh
-```
+The script stores key resource names to `last_outputs.json` after each deploy
+and uses them on the next run to clean up any leftover resources. This helps
+avoid naming conflicts when deploying repeatedly.
 
 ---
 
