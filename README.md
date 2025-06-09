@@ -44,15 +44,26 @@ export ENERGY_BUCKET_NAME=$(terraform -chdir=terraform output -raw s3_bucket_nam
 
 ### 4. Set DynamoDB Table Name
 After Terraform deploys, export the generated table name so local apps can find it:
+
+=======
 ```bash
 export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
 ```
 
 ### 5. Zip Lambda Files
+
 ```bash
-cd lambda && zip lambda_function.zip lambda_function.py && cd ..
-cd data_generator && zip generate_data.zip generate_data.py && cd ..
+export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
 ```
+
+
+### 5.1 Build Lambda Packages
+Install dependencies and create deployment zips:
+```bash
+cd lambda && ./build.sh && cd ..
+cd data_generator && ./build.sh && cd ..
+```
+
 
 ### 6. Deploy Infrastructure
 Run the helper script which initializes Terraform, destroys any existing stack,

@@ -11,3 +11,9 @@ resource "random_string" "dynamodb_suffix" {
   upper   = false
 }
 
+resource "random_string" "iam_suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
