@@ -44,16 +44,26 @@ export ENERGY_BUCKET_NAME=$(terraform -chdir=terraform output -raw s3_bucket_nam
 
 ### 4. Set DynamoDB Table Name
 After Terraform deploys, export the generated table name so local apps can find it:
+
+=======
 ```bash
 export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
 ```
 
-### 5. Build Lambda Packages
+### 5. Zip Lambda Files
+
+```bash
+export TABLE_NAME=$(terraform -chdir=terraform output -raw dynamodb_table_name)
+```
+
+
+### 5.1 Build Lambda Packages
 Install dependencies and create deployment zips:
 ```bash
 cd lambda && ./build.sh && cd ..
 cd data_generator && ./build.sh && cd ..
 ```
+
 
 ### 6. Deploy Infrastructure
 Run the helper script which initializes Terraform, destroys any existing stack,
@@ -105,6 +115,11 @@ python visualization/visualize.py
 cd terraform
 terraform destroy -auto-approve
 ```
+Alternatively, trigger the **Terraform Destroy** workflow on GitHub:
+1. Push this repository to GitHub.
+2. Open the **Actions** tab.
+3. Select **Terraform Destroy** and click **Run workflow**.
+This runs `terraform destroy -auto-approve` for you.
 
 ---
 
@@ -119,6 +134,7 @@ terraform destroy -auto-approve
 ```
 aws-energy-data-pipeline/
 ├── .github/workflows/deploy.yml
+├── .github/workflows/destroy.yml
 ├── api/main.py
 ├── data_generator/generate_data.py
 ├── lambda/lambda_function.py

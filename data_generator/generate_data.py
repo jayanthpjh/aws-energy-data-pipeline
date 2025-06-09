@@ -1,4 +1,7 @@
-import json, time, requests
+import json
+import time
+import requests
+import random
 import boto3
 from datetime import datetime
 from uuid import uuid4
@@ -29,13 +32,22 @@ def get_energy_generated(lat, lon):
     return round(sum(temps) / len(temps) * 0.8, 2)
 
 def generate_record(site):
-    generated = get_energy_generated(site['lat'], site['lon'])
-    consumed = round(generated * 0.9 + 5, 2)
+    generated = get_energy_generated(site["lat"], site["lon"])
+
+    choice = random.choice(["pos", "neg", "zero"])
+    diff = round(random.uniform(0.1, 5.0), 2)
+    if choice == "pos":
+        consumed = round(generated - diff, 2)
+    elif choice == "neg":
+        consumed = round(generated + diff, 2)
+    else:  # zero difference
+        consumed = generated
+
     return {
-        "site_id": site['site_id'],
+        "site_id": site["site_id"],
         "timestamp": datetime.utcnow().isoformat(),
         "energy_generated_kwh": generated,
-        "energy_consumed_kwh": consumed
+        "energy_consumed_kwh": consumed,
     }
 
 def upload_data():
