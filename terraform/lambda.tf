@@ -8,7 +8,10 @@ resource "aws_lambda_function" "processor" {
 
   filename         = "../lambda/lambda_function.zip"
   source_code_hash = filebase64sha256("../lambda/lambda_function.zip")
+
   layers           = [aws_lambda_layer_version.common.arn]
+
+
 
 
   environment {
