@@ -18,4 +18,4 @@ def get_site_data(site_id: str, start: str, end: str):
 @app.get("/site/{site_id}/anomalies")
 def get_anomalies(site_id: str):
     response = table.query(KeyConditionExpression=Key('site_id').eq(site_id))
-    return [i for i in response['Items'] if i['anomaly']]
+    return [i for i in response['Items'] if i.get('anomaly') == 0]
