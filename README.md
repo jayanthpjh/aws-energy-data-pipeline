@@ -55,10 +55,11 @@ cd data_generator && zip generate_data.zip generate_data.py && cd ..
 ```
 
 ### 6. Deploy Infrastructure
+Run the helper script which initializes Terraform, destroys any existing stack,
+and then creates fresh resources:
 ```bash
 cd terraform
-terraform init
-terraform apply -auto-approve
+./redeploy.sh
 ```
 
 ---
