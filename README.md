@@ -95,6 +95,11 @@ python visualization/visualize.py
 cd terraform
 terraform destroy -auto-approve
 ```
+Alternatively, trigger the **Terraform Destroy** workflow on GitHub:
+1. Push this repository to GitHub.
+2. Open the **Actions** tab.
+3. Select **Terraform Destroy** and click **Run workflow**.
+This runs `terraform destroy -auto-approve` for you.
 
 ---
 
@@ -109,6 +114,7 @@ terraform destroy -auto-approve
 ```
 aws-energy-data-pipeline/
 ├── .github/workflows/deploy.yml
+├── .github/workflows/destroy.yml
 ├── api/main.py
 ├── data_generator/generate_data.py
 ├── lambda/lambda_function.py
