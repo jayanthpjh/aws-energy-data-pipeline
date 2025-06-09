@@ -6,8 +6,8 @@ resource "aws_lambda_function" "data_feeder" {
   timeout       = 30
   memory_size   = 128
 
-  filename         = data.archive_file.feeder_output.output_path
-  source_code_hash = data.archive_file.feeder_output.output_base64sha256
+  filename         = "../data_generator/generate_data.zip"
+  source_code_hash = filebase64sha256("../data_generator/generate_data.zip")
 }
 
 resource "aws_cloudwatch_event_rule" "five_min_schedule" {

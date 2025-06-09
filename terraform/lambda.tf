@@ -6,8 +6,14 @@ resource "aws_lambda_function" "processor" {
   timeout       = 30
   memory_size   = 128
 
-  filename         = data.archive_file.output.output_path
-  source_code_hash = data.archive_file.output.output_base64sha256
+  filename         = "../lambda/lambda_function.zip"
+  source_code_hash = filebase64sha256("../lambda/lambda_function.zip")
+
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.energy_table.name
+    }
+  }
 }
 
 resource "aws_lambda_permission" "allow_s3" {
