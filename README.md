@@ -33,11 +33,11 @@ A fully serverless, auto-deploying energy monitoring pipeline using Terraform, L
 ```bash
 git clone https://github.com/yourname/aws-energy-data-pipeline.git
 cd aws-energy-data-pipeline
+pip install -r requirements.txt
+bash lambda/build.sh
+bash data_generator/build.sh
 ```
-
-
-```
-
+Run the build scripts to package the Lambda functions with their dependencies.
 The script stores key resource names to `last_outputs.json` after each deploy
 and uses them on the next run to clean up any leftover resources. This helps
 avoid naming conflicts when deploying repeatedly.
@@ -109,6 +109,7 @@ aws-energy-data-pipeline/
 ├── lambda/lambda_function.py
 ├── visualization/visualize.py
 ├── terraform/*.tf
+├── requirements.txt
 ├── .gitignore
 ├── README.md
 ```

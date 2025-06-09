@@ -9,9 +9,6 @@ resource "aws_lambda_function" "processor" {
 
   filename         = "../lambda/lambda_function.zip"
   source_code_hash = filebase64sha256("../lambda/lambda_function.zip")
-=======
-  filename         = data.archive_file.output.output_path
-  source_code_hash = data.archive_file.output.output_base64sha256
 
 
   environment {
