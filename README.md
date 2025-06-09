@@ -40,11 +40,8 @@ cd aws-energy-data-pipeline
 export ENERGY_BUCKET_NAME=your-bucket-name
 ```
 
-### 4. Zip Lambda Files
-```bash
-cd lambda && zip lambda_function.zip lambda_function.py && cd ..
-cd data_generator && zip generate_data.zip generate_data.py && cd ..
-```
+### 4. Lambda Packaging
+Terraform automatically creates the Lambda zip files during `terraform apply`, so manual zipping is unnecessary.
 
 ### 5. Deploy Infrastructure
 ```bash
