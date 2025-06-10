@@ -12,7 +12,6 @@ resource "aws_lambda_function" "data_feeder" {
 
 resource "aws_cloudwatch_event_rule" "five_min_schedule" {
   name = "five_min_schedule-${random_pet.suffix.id}"
-  name                = "fiveMinEnergyFeedSchedule"
   schedule_expression = "rate(5 minutes)"
 }
 

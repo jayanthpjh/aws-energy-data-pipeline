@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "energy_data" {
   bucket = "energy_data-${random_pet.suffix.id}"
-  bucket = var.s3_bucket
   force_destroy = true
 }
 
