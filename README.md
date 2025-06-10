@@ -33,21 +33,25 @@ A fully serverless, auto-deploying energy monitoring pipeline using Terraform, L
 ```bash
 git clone https://github.com/yourname/aws-energy-data-pipeline.git
 cd aws-energy-data-pipeline
-pip install -r requirements.txt
-bash lambda/build.sh
-bash data_generator/build.sh
-
-bash layers/build.sh
 ```
-These archives must exist before running `terraform plan` so Terraform can find the zip files.
-Run the build scripts to create the Lambda deployment archives and the dependency layer.
 
+### 3. Export Your S3 Bucket for Local Testing
+```bash
+export ENERGY_BUCKET_NAME=your-bucket-name
 ```
-Run the build scripts to package the Lambda functions with their dependencies.
 
-The script stores key resource names to `last_outputs.json` after each deploy
-and uses them on the next run to clean up any leftover resources. This helps
-avoid naming conflicts when deploying repeatedly.
+### 4. Zip Lambda Files
+```bash
+cd lambda && zip lambda_function.zip lambda_function.py && cd ..
+cd data_generator && zip generate_data.zip generate_data.py && cd ..
+```
+
+### 5. Deploy Infrastructure
+```bash
+cd terraform
+terraform init
+terraform apply -auto-approve
+```
 
 ---
 
@@ -91,11 +95,6 @@ python visualization/visualize.py
 cd terraform
 terraform destroy -auto-approve
 ```
-Alternatively, trigger the **Terraform Destroy** workflow on GitHub:
-1. Push this repository to GitHub.
-2. Open the **Actions** tab.
-3. Select **Terraform Destroy** and click **Run workflow**.
-This runs `terraform destroy -auto-approve` for you.
 
 ---
 
@@ -110,13 +109,11 @@ This runs `terraform destroy -auto-approve` for you.
 ```
 aws-energy-data-pipeline/
 ├── .github/workflows/deploy.yml
-├── .github/workflows/destroy.yml
 ├── api/main.py
 ├── data_generator/generate_data.py
 ├── lambda/lambda_function.py
 ├── visualization/visualize.py
 ├── terraform/*.tf
-├── requirements.txt
 ├── .gitignore
 ├── README.md
 ```

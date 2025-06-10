@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "energy_data" {
-  bucket = "${var.s3_bucket}-${random_string.s3_suffix.result}"
+  bucket = var.s3_bucket
   force_destroy = true
 }
 

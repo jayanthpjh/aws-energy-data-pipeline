@@ -1,4 +1,4 @@
-name: Energy_Data_CI/CD Terraform Deploy
+name: CI/CD Terraform Deploy
 
 on:
   push:
@@ -12,18 +12,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.6.0
-
-    - name: Install dependencies
-      run: pip install -r requirements.txt
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -32,28 +24,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    # ✅ ZIP Lambda Layer
-    - name: Package Lambda Layer
-      run: |
-        cd layers
-        zip -r layer.zip . 
-        cd ..
-
-    # ✅ ZIP lambda_function.zip from /lambda
-    - name: Package Lambda Function
-      run: |
-        cd lambda
-        zip -r lambda_function.zip . 
-        cd ..
-
-    # ✅ ZIP generate_data.zip from /data_generator
-    - name: Package Data Generator Lambda
-      run: |
-        cd data_generator
-        zip -r generate_data.zip . 
-        cd ..
-
-    # Terraform commands
     - name: Terraform Init
       run: terraform -chdir=terraform init
 

@@ -1,11 +1,8 @@
 import json
 import boto3
-import os
 
 dynamodb = boto3.resource('dynamodb')
-table_name = os.getenv('TABLE_NAME', 'EnergyData')
-table = dynamodb.Table(table_name)
-
+table = dynamodb.Table('EnergyData')
 
 def lambda_handler(event, context):
     for record in event['Records']:
@@ -20,7 +17,7 @@ def lambda_handler(event, context):
             generated = entry['energy_generated_kwh']
             consumed = entry['energy_consumed_kwh']
             net = generated - consumed
-            flag = 0 if net < 0 else 1
+            anomaly = generated < 0 or consumed < 0
 
             table.put_item(Item={
                 'site_id': entry['site_id'],
@@ -28,6 +25,6 @@ def lambda_handler(event, context):
                 'energy_generated_kwh': generated,
                 'energy_consumed_kwh': consumed,
                 'net_energy_kwh': net,
-                'anomaly': flag
+                'anomaly': anomaly
             })
     return {"status": "Processed"}
