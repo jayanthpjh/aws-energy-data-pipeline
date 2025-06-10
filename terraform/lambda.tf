@@ -6,7 +6,7 @@ resource "aws_lambda_function" "processor" {
   timeout       = 30
   memory_size   = 128
 
-  filename         = data.archive_file.output.path
+  filename         = data.archive_file.output_path
   source_code_hash = data.archive_file.output.output_base64sha256
 }
 
