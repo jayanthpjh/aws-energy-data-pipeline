@@ -1,9 +1,3 @@
-data "archive_file" "process_data_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/../process_lambda"
-  output_path = "${path.module}/../process_lambda.zip"
-}
-
 resource "aws_lambda_function" "processor" {
   function_name = "process-data-lambda"
   role          = aws_iam_role.lambda_exec.arn
