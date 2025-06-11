@@ -7,8 +7,3 @@ variable "s3_bucket_name" {
   description = "The name of the S3 bucket to store energy data"
 }
 
-variable "region" {
-  type        = string
-  default     = "us-east-1"
-  description = "AWS region to deploy resources in"
-}
