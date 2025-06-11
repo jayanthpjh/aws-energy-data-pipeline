@@ -1,52 +1,54 @@
-name: Terraform Destroy + Apply
+#!/bin/bash
+set -e
 
-on:
-  push:
-    branches:
-      - main
+REGION="us-east-1"
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+echo "⚠️ WARNING: This script will DELETE resources in region: $REGION"
+read -p "Type 'yes' to proceed: " confirm
+if [[ "$confirm" != "yes" ]]; then
+  echo "Aborted."
+  exit 1
+fi
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+# Lambda deletion
+for fn in $(aws lambda list-functions --region $REGION --query 'Functions[*].FunctionName' --output text); do
+  echo "Deleting Lambda: $fn"
+  aws lambda delete-function --function-name "$fn" --region $REGION
+done
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.7
+# S3 deletion
+for bucket in $(aws s3api list-buckets --query 'Buckets[*].Name' --output text); do
+  region=$(aws s3api get-bucket-location --bucket $bucket --query 'LocationConstraint' --output text)
+  [[ "$region" == "None" ]] && region="us-east-1"
+  if [[ "$region" == "$REGION" ]]; then
+    echo "Deleting S3 Bucket: $bucket"
+    aws s3 rm "s3://$bucket" --recursive || true
+    aws s3api delete-bucket --bucket "$bucket" --region $REGION || true
+  fi
+done
 
-      - name: Install jq and make destroy script executable
-        run: |
-          sudo apt-get update && sudo apt-get install -y jq
-          chmod +x ./aws-nuke-us-east-1.sh
+# DynamoDB
+for table in $(aws dynamodb list-tables --region $REGION --query 'TableNames[*]' --output text); do
+  echo "Deleting DynamoDB table: $table"
+  aws dynamodb delete-table --table-name "$table" --region $REGION
+done
 
-      - name: Run AWS Destroy Script
-        run: ./aws-nuke-us-east-1.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        continue-on-error: true
+# EventBridge
+for rule in $(aws events list-rules --region $REGION --query 'Rules[*].Name' --output text); do
+  echo "Deleting EventBridge rule: $rule"
+  aws events remove-targets --rule "$rule" --ids 1 --region $REGION || true
+  aws events delete-rule --name "$rule" --region $REGION
+done
 
-      - name: Terraform Init
-        run: terraform -chdir=terraform init
+# IAM
+for role in $(aws iam list-roles --query 'Roles[*].RoleName' --output text); do
+  if [[ "$role" == *lambda_exec* ]]; then
+    echo "Deleting IAM Role: $role"
+    for policy in $(aws iam list-attached-role-policies --role-name "$role" --query 'AttachedPolicies[*].PolicyArn' --output text); do
+      aws iam detach-role-policy --role-name "$role" --policy-arn "$policy"
+    done
+    aws iam delete-role --role-name "$role"
+  fi
+done
 
-      - name: Terraform Apply
-        id: apply
-        run: terraform -chdir=terraform apply -auto-approve
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-
-      - name: Export Resource Names
-        run: |
-          echo "Exporting Terraform outputs to ENV variables"
-          terraform -chdir=terraform output -json > tf_outputs.json
-          for key in $(jq -r 'keys[]' tf_outputs.json); do
-            value=$(jq -r ".[$key].value" tf_outputs.json)
-            echo "Exporting $key=$value"
-            echo "$key=$value" >> $GITHUB_ENV
+echo "✅ AWS cleanup complete in $REGION"
