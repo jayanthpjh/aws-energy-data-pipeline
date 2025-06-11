@@ -24,15 +24,25 @@ jobs:
           chmod +x ./aws-nuke-us-east-1.sh
 
       - name: Run AWS Destroy Script
-        run: ./aws-nuke-us-east-1.sh
+        run: |
+          echo "⚠️ Running AWS Destroy Script"
+          ./aws-nuke-us-east-1.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
-        continue-on-error: true  # Optional: allows apply to proceed even if destroy partially fails
+        continue-on-error: true
 
       - name: Terraform Init
         run: terraform -chdir=terraform init
+        
+      - name: Terraform Plan
+        id: plan
+        run: terraform -chdir=terraform plan 
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
       - name: Terraform Apply
         id: apply
@@ -42,12 +52,16 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
-      - name: Export Resource Names
+      - name: Export Terraform Outputs to Environment Variables
+        if: success()
         run: |
-          echo "Exporting Terraform outputs to ENV variables"
+          echo "Exporting Terraform outputs to environment variables..."
           terraform -chdir=terraform output -json > tf_outputs.json
-          for key in $(jq -r 'keys[]' tf_outputs.json); do
-            value=$(jq -r ".[$key].value" tf_outputs.json)
-            echo "Exporting $key=$value"
-            echo "$key=$value" >> $GITHUB_ENV
-          done
+
+          echo "S3_BUCKET_NAME=$(jq -r .s3_bucket_name.value tf_outputs.json)" >> $GITHUB_ENV
+          echo "DYNAMODB_TABLE_NAME=$(jq -r .dynamodb_table_name.value tf_outputs.json)" >> $GITHUB_ENV
+          echo "DATA_FEEDER_LAMBDA_ARN=$(jq -r .data_feeder_lambda_arn.value tf_outputs.json)" >> $GITHUB_ENV
+          echo "PROCESSOR_LAMBDA_ARN=$(jq -r .processor_lambda_arn.value tf_outputs.json)" >> $GITHUB_ENV
+          echo "CLOUDWATCH_EVENT_RULE_NAME=$(jq -r .cloudwatch_event_rule_name.value tf_outputs.json)" >> $GITHUB_ENV
+          echo "LAMBDA_EXEC_ROLE_ARN=$(jq -r .lambda_exec_role_arn.value tf_outputs.json)" >> $GITHUB_ENV
+        shell: bash
