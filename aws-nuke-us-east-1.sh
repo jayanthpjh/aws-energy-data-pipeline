@@ -1,0 +1,52 @@
+name: Terraform Destroy + Apply
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+
+      - name: Install jq and make destroy script executable
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          chmod +x ./aws-nuke-us-east-1.sh
+
+      - name: Run AWS Destroy Script
+        run: ./aws-nuke-us-east-1.sh
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+        continue-on-error: true
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform -chdir=terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+
+      - name: Export Resource Names
+        run: |
+          echo "Exporting Terraform outputs to ENV variables"
+          terraform -chdir=terraform output -json > tf_outputs.json
+          for key in $(jq -r 'keys[]' tf_outputs.json); do
+            value=$(jq -r ".[$key].value" tf_outputs.json)
+            echo "Exporting $key=$value"
+            echo "$key=$value" >> $GITHUB_ENV
