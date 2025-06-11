@@ -4,7 +4,7 @@ output "s3_bucket_name" {
 }
 
 output "dynamodb_table_name" {
-  value       = aws_dynamodb_table.energy_data_info.name
+  value       = aws_dynamodb_table.energy_data.name
   description = "DynamoDB table storing processed energy data."
 }
 
