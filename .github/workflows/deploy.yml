@@ -1,8 +1,9 @@
 name: Terraform Apply
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub Actions UI
-
+  push:
+    branches:
+      - main 
 jobs:
   Clean-Build:
     runs-on: ubuntu-latest
