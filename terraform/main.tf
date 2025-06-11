@@ -3,3 +3,5 @@ provider "aws" {
 }
 
 resource "random_pet" "suffix" {}
+
+data "aws_caller_identity" "current" {}
