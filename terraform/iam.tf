@@ -25,8 +25,8 @@ resource "aws_iam_policy" "data_feeder_policy" {
         ],
         Effect   = "Allow",
         Resource = [
-          "arn:aws:s3:::${var.s3_bucket_name}",
-          "arn:aws:s3:::${var.s3_bucket_name}/*"
+          aws_s3_bucket.energy_data.arn,
+          "${aws_s3_bucket.energy_data.arn}/*"
         ]
       },
       {
@@ -74,8 +74,8 @@ resource "aws_iam_policy" "processor_policy" {
         ],
         Effect   = "Allow",
         Resource = [
-          "arn:aws:s3:::${var.s3_bucket_name}",
-          "arn:aws:s3:::${var.s3_bucket_name}/*"
+          aws_s3_bucket.energy_data.arn,
+          "${aws_s3_bucket.energy_data.arn}/*"
         ]
       },
       {

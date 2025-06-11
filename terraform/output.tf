@@ -23,7 +23,12 @@ output "cloudwatch_event_rule_name" {
   description = "Name of the EventBridge rule that triggers the data feeder Lambda."
 }
 
-output "lambda_exec_role_arn" {
-  value       = aws_iam_role.lambda_exec.arn
-  description = "IAM Role ARN for Lambda execution with S3 and DynamoDB access."
+output "lambda_exec_feeder_role_arn" {
+  value       = aws_iam_role.lambda_exec_data_feeder.arn
+  description = "IAM Role ARN for Data Feeder Lambda Execution"
+}
+
+output "lambda_exec_processor_role_arn" {
+  value       = aws_iam_role.lambda_exec_processor.arn
+  description = "IAM Role ARN for Processor Lambda Execution"
 }
