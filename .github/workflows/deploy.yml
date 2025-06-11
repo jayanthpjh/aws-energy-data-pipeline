@@ -50,3 +50,4 @@ jobs:
             value=$(jq -r ".[$key].value" tf_outputs.json)
             echo "Exporting $key=$value"
             echo "$key=$value" >> $GITHUB_ENV
+          done
