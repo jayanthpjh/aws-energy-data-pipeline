@@ -8,6 +8,13 @@ resource "aws_lambda_function" "processor" {
 
   filename         = data.archive_file.process_data_zip.output_path
   source_code_hash = data.archive_file.process_data_zip.output_base64sha256
+  
+  environment {
+    variables = {
+      ENERGY_BUCKET_NAME = aws_s3_bucket.energy_data.bucket
+      DYNAMODB_TABLE     = aws_dynamodb_table.energy_data_info.name
+    }
+  }
 }
 
 resource "aws_lambda_permission" "allow_s3" {
