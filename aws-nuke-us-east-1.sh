@@ -5,10 +5,16 @@ REGION="us-east-1"
 
 echo "⚠️ WARNING: This script will DELETE resources in region: $REGION"
 read -p "Type 'yes' to proceed: " confirm
-if [[ "$confirm" != "yes" ]]; then
-  echo "Aborted."
-  exit 1
+if [[ -z "$CI" ]]; then
+  read -p "Type 'yes' to proceed: " confirm
+  if [[ "$confirm" != "yes" ]]; then
+    echo "Aborted."
+    exit 1
+  fi
+else
+  echo "CI environment detected, skipping prompt."
 fi
+
 
 # Lambda deletion
 for fn in $(aws lambda list-functions --region $REGION --query 'Functions[*].FunctionName' --output text); do
