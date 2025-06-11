@@ -22,7 +22,7 @@ resource "aws_lambda_function" "processor" {
   environment {
     variables = {
       ENERGY_BUCKET_NAME = aws_s3_bucket.energy_data.bucket
-      ENERGY_TABLE_NAME  = aws_dynamodb_table.energy_table.name
+      ENERGY_TABLE_NAME  = aws_dynamodb_table.energy_data.name
     }
   }
 }
