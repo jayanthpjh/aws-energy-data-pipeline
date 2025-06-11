@@ -1,22 +1,20 @@
 import json
 import os
 import random
-import time
 from uuid import uuid4
 from datetime import datetime
 import boto3
 
 s3 = boto3.client("s3")
-BUCKET_NAME = os.environ.get("ENERGY_BUCKET_NAME", "your-bucket-name")
+BUCKET_NAME = os.environ.get('ENERGY_BUCKET_NAME', 'energy-data-${random_pet.suffix.id}')
 
 SITES = [
-    {"site_id": "site_nyc", "lat": 40.7128, "lon": -74.0060},
-    {"site_id": "site_sfo", "lat": 37.7749, "lon": -122.4194},
-    {"site_id": "site_chi", "lat": 41.8781, "lon": -87.6298}
+    { "site_id": "site_nyc", "lat": 40.7128, "lon": -74.0060 },
+    { "site_id": "site_sfo", "lat": 37.7749, "lon": -122.4194 },
+    { "site_id": "site_chi", "lat": 41.8781, "lon": -87.6298 }
 ]
 
 def generate_record(site):
-    # Introduce anomalies randomly
     is_anomaly = random.random() < 0.1
     energy_generated = round(random.uniform(10, 100), 2)
     energy_consumed = round(random.uniform(5, 95), 2)
