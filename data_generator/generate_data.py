@@ -8,7 +8,7 @@ import os
 
 bucket_name = os.environ["ENERGY_BUCKET_NAME"]
 s3 = boto3.client("s3")
-BUCKET_NAME = os.environ.get('ENERGY_BUCKET_NAME', 'energy-data-${random_pet.suffix.id}')
+BUCKET_NAME = os.environ.get('ENERGY_BUCKET_NAME')
 
 SITES = [
     { "site_id": "site_nyc", "lat": 40.7128, "lon": -74.0060 },
