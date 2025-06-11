@@ -1,10 +1,10 @@
-name: Terraform Destroy + Apply
+name: Terraform Apply
 
 on:
   workflow_dispatch:  # Manual trigger from GitHub Actions UI
 
 jobs:
-  reset:
+  Clean-Build:
     runs-on: ubuntu-latest
 
     steps:
